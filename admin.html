@@ -1,0 +1,85 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+
+<body>
+
+    <h1>Welcome to admin page </h1>
+    <div>
+        <table id="stories">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Stoy</th>
+                <th>Status</th>
+                <th>Data</th>
+                 </tr>
+
+    </div>
+
+
+    <script>
+        let id = 3;
+        // $.get(`calhost:8080/changeStatus?id=${id}`, function(data, status){})
+
+
+        let stories = null;
+        // get stories by get request 
+        $.get("http://localhost:8080/getStories", function (data, status) {
+            stories = data;
+
+            stories.forEach(element => {
+                document.getElementById('stories').innerHTML +=
+                    ` <tr> 
+        <td>${element.id}</td>
+        <td>${element.title}</td>
+        <td>${element.story}</td>
+        <td>${element.story_status}</td>
+        <td>${element.p_date}</td>
+        <td> <button> Delete </button> </td>
+        <td> <select> <option value="pending">Pending</option>
+  <option value="yes">Yes</option>
+  <option value="no">No</option>
+</select></td>
+
+        </tr>`
+
+
+
+                element.title + " | " + element.story
+
+            });
+
+
+        });
+    </script>
+
+
+</body>
+
+</html> -->

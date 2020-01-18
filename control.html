@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> </script>
+
+    <link rel="stylesheet" type="text/css" href="login.css">
+</head>
+
+<body>
+
+    <div id="form-container">
+        <h3>Login</h3>
+        <div>
+            <form action="/login" method="POST">
+                <label for="fname">Enter your user name</label>
+                <input type="text" id="fname" name="userName" placeholder="Your name..">
+                <label for="psw">Enter Your password</label>
+                <input type="password" id="psw" name="psw" placeholder="Enter your password">
+                <input class="getBtn" type='button' onclick="getStories()" value="login">
+            </form>
+        </div>
+    </div>
+
+
+    <h1>Welcome to admin page </h1>
+    <div>
+        <table id="stories">
+
+
+
+
+    </div>
+<button><a href="/">Back to home page</a></button>
+
+</body>
+<script>
+    let checkData;
+
+    let stories = null;
+
+    function getStories() {
+
+        let stories = null;
+        $.post("/login", {
+                userName: document.getElementById('fname').value,
+                psw: document.getElementById('psw').value
+            },
+            showStories
+        );
+    }
+
+    function showStories(data, status) {
+        checkData = data;
+        stories = data;
+
+        if (typeof checkData == "object") {
+            document.getElementById('form-container').style.display = 'none';
+
+            document.getElementById('stories').innerHTML = `
+                 <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Stoy</th>
+                <th>Status</th>
+                <th>Data</th>
+                <th>Delete</th>
+                <th>ChangeStatus</th>
+            </tr>`;
+
+
+            stories.forEach(element => {
+                document.getElementById('stories').innerHTML +=
+
+                    `
+                
+                        
+                        <tr> 
+        <td>${element.id}</td>
+        <td>${element.title}</td>
+        <td>
+        <details>
+  <summary>Click to read the story </summary>
+  ${element.story}
+</details>
+
+
+
+</td>
+        <td>${element.story_status}</td>
+        <td>${element.p_date}</td>
+        <td> <button id='${element.id}'   class="button button1 delete">Delete</button> </td>
+        <td> <select id='${element.id}' class='chosenStatus'> <option value="pending">Pending</option>
+            <option value="yes">Yes</option>
+                <option value="no">No</option>
+                    </select></td> </tr>`
+
+            });
+
+                deleteAndChange();
+
+        } else {
+            document.forms[0].reset();
+            alert('password or user name is incorrect');
+        }
+
+
+            }   
+
+            function deleteAndChange(){
+
+        var length = document.getElementsByClassName('chosenStatus').length;
+
+        for (let i = 0; i < length; i++) {
+            document.getElementsByClassName('chosenStatus')[i].addEventListener("change", function (event) {
+               
+                let id = event.target.id;
+                let status = event.target.value;
+                changeStatus(id,status);
+                // console.log(`id is ${id} and status is ${status}`);
+
+            })
+        }
+
+        function changeStatus(givenId,givenStatus) {
+            $.post("/changeStatus", {
+                    status: givenStatus,
+                    id: givenId
+                },
+                function (data, status) {
+                   
+                    checkData = data;
+                    stories = data;
+                    
+                });
+                setTimeout(getStories, 800);
+        }
+
+
+
+
+        var delLength = document.getElementsByClassName('delete').length;
+
+        for (let i = 0; i < delLength; i++) {
+            document.getElementsByClassName('delete')[i].addEventListener("click", function (event) {
+               
+                let id = event.target.id;
+              this.parentElement.parentElement.remove();
+                deleteStory(id);
+                // console.log(`id is ${id} and status is ${status}`);
+
+            })
+        }
+    function deleteStory(givenId){
+
+        
+        $.post("/deleteStory", {
+                id: givenId
+                },
+                function (data, status) {
+                  
+                    checkData = data;
+                    stories = data;
+                    
+                });
+    }
+
+}
+</script>
+
+
+
+
+</html>
